@@ -115,6 +115,17 @@ export function SettingsScreen() {
         </View>
 
         <View style={{ gap: 12 }}>
+          <LabelCaps>DATA</LabelCaps>
+          <GlassCard className="p-2">
+            <SettingsRow
+              icon="import-export"
+              label="Export / Import"
+              onPress={() => navigation.navigate('ExportImport' as never)}
+            />
+          </GlassCard>
+        </View>
+
+        <View style={{ gap: 12 }}>
           <LabelCaps>NUTRITION</LabelCaps>
           <GlassCard className="p-2">
             <Pressable

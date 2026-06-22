@@ -10,6 +10,7 @@ import { NutritionStack } from '../screens/NutritionStack';
 import { GalleryScreen } from '../screens/GalleryScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { WeightHistoryScreen } from '../screens/WeightHistoryScreen';
+import { ExportImportScreen } from '../screens/ExportImportScreen';
 
 export type TabParamList = {
   Dashboard: undefined;
@@ -22,6 +23,7 @@ export type RootStackParamList = {
   Tabs: undefined;
   Settings: undefined;
   WeightHistory: undefined;
+  ExportImport: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -60,6 +62,7 @@ export function RootNavigator() {
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ presentation: 'card' }} />
         <Stack.Screen name="WeightHistory" component={WeightHistoryScreen} options={{ presentation: 'card' }} />
+        <Stack.Screen name="ExportImport" component={ExportImportScreen} options={{ presentation: 'card' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

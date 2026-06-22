@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useClearOnReset } from './DataContext';
-
-const DEFAULT_CATEGORIES = ['Chest', 'Back', 'Legs', 'Arms', 'Core', 'Full Body'];
+import * as db from '../storage/database';
 
 type CategoriesContextValue = {
   categories: string[];
@@ -12,9 +11,17 @@ type CategoriesContextValue = {
 const CategoriesContext = createContext<CategoriesContextValue | null>(null);
 
 export function CategoriesProvider({ children }: { children: React.ReactNode }) {
-  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<string[]>([]);
 
-  useClearOnReset('categories', () => setCategories(DEFAULT_CATEGORIES));
+  useEffect(() => {
+    db.getAllCategories().then(setCategories).catch(() => {});
+  }, []);
+
+  useClearOnReset('categories', () => {
+    db.clearCategories()
+      .then(() => setCategories([]))
+      .catch(() => setCategories([]));
+  });
 
   const value = useMemo<CategoriesContextValue>(
     () => ({
@@ -22,9 +29,12 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
       addCategory: (name) => {
         const trimmed = name.trim();
         if (!trimmed) return;
-        setCategories((prev) => (prev.some((c) => c.toLowerCase() === trimmed.toLowerCase()) ? prev : [...prev, trimmed]));
+        if (categories.some((c) => c.toLowerCase() === trimmed.toLowerCase())) return;
+        db.addCategory(trimmed).catch(() => {});
+        setCategories((prev) => [...prev, trimmed]);
       },
       removeCategory: (name) => {
+        db.removeCategory(name).catch(() => {});
         setCategories((prev) => prev.filter((c) => c !== name));
       },
     }),

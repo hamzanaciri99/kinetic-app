@@ -1,30 +1,13 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useClearOnReset } from './DataContext';
 import { makeId } from '../utils/date';
+import * as db from '../storage/database';
 
 export type WeightEntry = {
   id: string;
   date: string;
   kg: number;
 };
-
-function daysAgoIso(daysAgo: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  d.setHours(8, 0, 0, 0);
-  return d.toISOString();
-}
-
-const seedWeightEntries: WeightEntry[] = [
-  { id: makeId(), date: daysAgoIso(28), kg: 84.6 },
-  { id: makeId(), date: daysAgoIso(24), kg: 84.1 },
-  { id: makeId(), date: daysAgoIso(19), kg: 83.7 },
-  { id: makeId(), date: daysAgoIso(15), kg: 83.4 },
-  { id: makeId(), date: daysAgoIso(10), kg: 83.0 },
-  { id: makeId(), date: daysAgoIso(6), kg: 82.7 },
-  { id: makeId(), date: daysAgoIso(3), kg: 82.6 },
-  { id: makeId(), date: daysAgoIso(0), kg: 82.4 },
-];
 
 export type WeightSeriesPoint = { date: string; kg: number };
 
@@ -44,9 +27,19 @@ function sortedByDate(entries: WeightEntry[]): WeightEntry[] {
 }
 
 export function BodyMetricsProvider({ children }: { children: React.ReactNode }) {
-  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>(seedWeightEntries);
+  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
 
-  useClearOnReset('weight', () => setWeightEntries([]));
+  useEffect(() => {
+    db.getAllWeightEntries()
+      .then((rows) => setWeightEntries(rows.map((r) => ({ id: r.id, date: r.date, kg: r.kg }))))
+      .catch(() => {});
+  }, []);
+
+  useClearOnReset('weight', () => {
+    db.clearWeightEntries()
+      .then(() => setWeightEntries([]))
+      .catch(() => setWeightEntries([]));
+  });
 
   const value = useMemo<BodyMetricsContextValue>(() => {
     const sorted = sortedByDate(weightEntries);
@@ -67,9 +60,13 @@ export function BodyMetricsProvider({ children }: { children: React.ReactNode })
       weightEntries: sorted,
       addWeightEntry: (kg) => {
         if (!Number.isFinite(kg) || kg <= 0) return;
-        setWeightEntries((prev) => [...prev, { id: makeId(), date: new Date().toISOString(), kg }]);
+        const id = makeId();
+        const date = new Date().toISOString();
+        db.insertWeightEntry({ id, date, kg }).catch(() => {});
+        setWeightEntries((prev) => [...prev, { id, date, kg }]);
       },
       removeWeightEntry: (id) => {
+        db.deleteWeightEntry(id).catch(() => {});
         setWeightEntries((prev) => prev.filter((e) => e.id !== id));
       },
       latestWeight,

@@ -46,7 +46,9 @@
         {
           "cameraPermission": "Kinetic uses your camera to scan barcodes and food photos."
         }
-      ]
+      ],
+      "expo-sqlite",
+      "expo-sharing"
     ]
   }
 }

@@ -52,26 +52,30 @@ export function GalleryOverviewScreen() {
     };
   }, [compare.before, compare.after]);
 
-  const addCapture = (image: string, category?: string) => {
-    addCaptureToGallery(image, category);
-    Alert.alert('Capture Added', 'Your new progress photo has been added to the timeline.');
+  const addCapture = async (tempUri: string, category?: string) => {
+    try {
+      await addCaptureToGallery(tempUri, category);
+      Alert.alert('Capture Added', 'Your new progress photo has been saved.');
+    } catch {
+      Alert.alert('Save Failed', 'Could not save the photo. Please try again.');
+    }
   };
 
   const handleNewCapture = async () => {
     const uri = await pickProgressPhoto();
     if (!uri) return;
     if (categories.length === 0) {
-      addCapture(uri);
+      await addCapture(uri);
       return;
     }
     setCategorizingImage(uri);
   };
 
-  const handlePickCategory = (category: string | null) => {
+  const handlePickCategory = async (category: string | null) => {
     const image = categorizingImage;
     setCategorizingImage(null);
     if (!image) return;
-    addCapture(image, category ?? undefined);
+    await addCapture(image, category ?? undefined);
   };
 
   const handlePickCompareImage = (image: string) => {
@@ -324,7 +328,16 @@ export function GalleryOverviewScreen() {
                 className="relative aspect-square overflow-hidden rounded-sm bg-surface-container-low"
                 style={{ width: '32.6%' }}
               >
-                <Image source={{ uri: item.image }} className="h-full w-full" resizeMode="cover" style={{ opacity: item.featured ? 1 : 0.85 }} />
+                {item.photoMissing ? (
+                  <View className="h-full w-full items-center justify-center" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
+                    <MaterialIcons name="broken-image" size={22} color={colors.onSurfaceVariant} />
+                    <Text className="mt-1 text-center text-[8px] text-on-surface-variant" style={{ fontFamily: 'Inter_400Regular' }}>
+                      Not found
+                    </Text>
+                  </View>
+                ) : (
+                  <Image source={{ uri: item.image }} className="h-full w-full" resizeMode="cover" style={{ opacity: item.featured ? 1 : 0.85 }} />
+                )}
                 {item.featured ? (
                   <View className="absolute inset-0" style={{ backgroundColor: 'rgba(199,243,0,0.18)', borderWidth: 2, borderColor: colors.electricLime }} />
                 ) : null}

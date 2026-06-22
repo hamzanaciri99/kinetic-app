@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getSetting, setSetting } from '../storage/database';
 
-const STORAGE_KEY = 'kinetic.hasSeenOnboarding';
+const SETTING_KEY = 'onboarding_seen';
 
 type OnboardingContextValue = {
   visible: boolean;
@@ -15,11 +15,11 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((value) => {
-        if (!value) setVisible(true);
+    getSetting(SETTING_KEY)
+      .then((val) => {
+        if (!val) setVisible(true);
       })
-      .catch(() => {});
+      .catch(() => setVisible(true));
   }, []);
 
   const value = useMemo<OnboardingContextValue>(
@@ -27,7 +27,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
       visible,
       finishOnboarding: () => {
         setVisible(false);
-        AsyncStorage.setItem(STORAGE_KEY, 'true').catch(() => {});
+        setSetting(SETTING_KEY, 'true').catch(() => {});
       },
       replayOnboarding: () => setVisible(true),
     }),
