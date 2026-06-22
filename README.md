@@ -281,26 +281,37 @@ npx tsc --noEmit
 
 ## Screenshots
 
-To add screenshots:
+> Screenshots captured from iOS Simulator running Expo SDK 56.
 
-1. Run `npx expo start` and open the app on a simulator or device
-2. Capture each screen and save to `assets/screenshots/`
-3. Name them: `dashboard.png`, `workouts.png`, `workout-logger.png`, `nutrition.png`, `log-meal.png`, `gallery.png`, `compare.png`, `weight-history.png`, `export-import.png`, `settings.png`
-
-The README will automatically display them once the files are in place:
-
-```md
+### Dashboard
 ![Dashboard](assets/screenshots/dashboard.png)
+
+### Workouts
 ![Workouts](assets/screenshots/workouts.png)
+
+### Workout Logger
 ![Workout Logger](assets/screenshots/workout-logger.png)
+
+### Nutrition
 ![Nutrition](assets/screenshots/nutrition.png)
+
+### Log Meal
 ![Log Meal](assets/screenshots/log-meal.png)
+
+### Progress Gallery
 ![Gallery](assets/screenshots/gallery.png)
-![Before / After Compare](assets/screenshots/compare.png)
+
+### Before / After Compare
+![Compare](assets/screenshots/compare.png)
+
+### Weight History
 ![Weight History](assets/screenshots/weight-history.png)
-![Export & Import](assets/screenshots/export-import.png)
+
+### Export & Import
+![Export Import](assets/screenshots/export-import.png)
+
+### Settings
 ![Settings](assets/screenshots/settings.png)
-```
 
 ---
 
