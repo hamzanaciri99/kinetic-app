@@ -84,30 +84,6 @@ export function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ gap: 12 }}>
-          <LabelCaps>ACCOUNT</LabelCaps>
-          <GlassCard className="p-2">
-            <SettingsRow icon="person" label="Profile" onPress={() => Alert.alert('Profile', 'Profile editing is coming soon.')} />
-            <View className="h-px bg-white/5" />
-            <SettingsRow
-              icon="notifications"
-              label="Notifications"
-              onPress={() => Alert.alert('Notifications', 'Notification preferences are coming soon.')}
-            />
-            <View className="h-px bg-white/5" />
-            <SettingsRow
-              icon="logout"
-              label="Log Out"
-              onPress={() =>
-                Alert.alert('Log Out', 'Are you sure you want to log out?', [
-                  { text: 'Cancel', style: 'cancel' },
-                  { text: 'Log Out', style: 'destructive', onPress: () => Alert.alert('Logged Out', "You've been logged out.") },
-                ])
-              }
-            />
-          </GlassCard>
-        </View>
-
-        <View style={{ gap: 12 }}>
           <LabelCaps>HELP</LabelCaps>
           <GlassCard className="p-2">
             <SettingsRow icon="school" label="Replay Tutorial" onPress={replayOnboarding} />
